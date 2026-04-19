@@ -7,3 +7,6 @@
 [submodule "src/paf/modules/factory_template"]
 	path = src/paf/modules/factory_template
 	url = https://github.com/PCLabTools/PAF-Module-Factory-Template.git
+[submodule "src/paf/modules/webserver"]
+	path = src/paf/modules/webserver
+	url = https://github.com/PCLabTools/PAF-Module-Simple-Web-Server.git

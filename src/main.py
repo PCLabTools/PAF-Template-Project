@@ -5,7 +5,7 @@ author: Your Name (your.email@example.com)
 """
 
 from paf.communication import Message, Protocol
-from paf.modules import ModuleTemplate, FactoryTemplate
+from paf.modules import ModuleTemplate, FactoryTemplate, WebServer
 
 class Main:
     """
@@ -21,6 +21,7 @@ class Main:
         ModuleTemplate("mod1", self.protocol, debug=self.debug)
         ModuleTemplate("mod2", self.protocol, debug=self.debug)
         FactoryTemplate("factory_mod", self.protocol, debug=self.debug, implementation_type="simulated")
+        self.webserver = WebServer("webserver", self.protocol, debug=self.debug)
 
     def __del__(self):
         """Clean up the main module by deleting the protocol instance.
@@ -36,15 +37,19 @@ class Main:
         self.protocol.send_action("mod2", "custom_action", {"data": "Hello from main!"})
         self.protocol.send_action("factory_mod", "custom_action", {"data": "Hello from main!"})
 
-        self.protocol.send_action(self.address, "shutdown")
+        print(f"\033[92mWeb UI available at {self.webserver.server_url}\033[0m")
 
         while True:
             try:
-                message = self.protocol.receive_message(self.address)
+                message = self.protocol.receive_message(self.address, timeout=1)
                 if self.handle_message(message):
                     break
-            except TimeoutError as e:
-                if self.debug: print(f"{self.__class__.__name__} ({self.address}): Timeout occurred while receiving message.")
+            except TimeoutError:
+                continue
+            except KeyboardInterrupt:
+                if self.debug: print(f"{self.__class__.__name__} ({self.address}): Keyboard interrupt received. Shutting down.")
+                self.protocol.broadcast_message("shutdown")
+                break
 
     def handle_message(self, message: Message) -> bool:
         """Handle incoming messages.
