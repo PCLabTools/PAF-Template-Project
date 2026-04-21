@@ -5,7 +5,7 @@ author: Your Name (your.email@example.com)
 """
 
 from paf.communication import Message, Protocol
-from paf.modules import ModuleTemplate, FactoryTemplate, WebServer
+from paf.modules import HelloWorld
 
 class Main:
     """
@@ -18,10 +18,9 @@ class Main:
         self.debug = 1
         self.address = "main"
         self.protocol = Protocol(self.address)
-        ModuleTemplate("mod1", self.protocol, debug=self.debug)
-        ModuleTemplate("mod2", self.protocol, debug=self.debug)
-        FactoryTemplate("factory_mod", self.protocol, debug=self.debug, implementation_type="simulated")
-        self.webserver = WebServer("webserver", self.protocol, debug=self.debug)
+
+        # Register the HelloWorld module with the protocol
+        HelloWorld("hello_world", self.protocol, debug=self.debug)
 
     def __del__(self):
         """Clean up the main module by deleting the protocol instance.
@@ -33,11 +32,16 @@ class Main:
         """
         if self.debug: print(f"{self.__class__.__name__} ({self.address}): Starting main application loop.")
 
-        self.protocol.send_action("mod1", "custom_action", {"data": "Hello from main!"})
-        self.protocol.send_action("mod2", "custom_action", {"data": "Hello from main!"})
-        self.protocol.send_action("factory_mod", "custom_action", {"data": "Hello from main!"})
+        # Send a greeting message to the HelloWorld module and print the response
+        greeting = self.protocol.send_request("hello_world", "greet")
 
-        print(f"\033[92mWeb UI available at {self.webserver.server_url}\033[0m")
+        # Print the greeting response
+        print(f"Received greeting: {greeting['response']}")
+
+        # Send shutdown command to the HelloWorld module to stop its thread
+        self.protocol.send_action("hello_world", "shutdown")
+
+        print(f"\033[92mMain application loop has started. Press Ctrl+C to exit.\033[0m")
 
         while True:
             try:

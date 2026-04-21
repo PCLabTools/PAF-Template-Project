@@ -72,10 +72,6 @@ echo Running PyInstaller...
     --specpath "%BUILD_DIR%" ^
     --paths "%REPO_ROOT%\src" ^
     --collect-submodules paf ^
-    --hidden-import paf.modules.factory_template.simulated ^
-    --add-data "%REPO_ROOT%\src\paf\modules\webserver\www\index.html;paf\modules\webserver\www" ^
-    --add-data "%REPO_ROOT%\src\paf\modules\webserver\www\styles.css;paf\modules\webserver\www" ^
-    --add-data "%REPO_ROOT%\src\paf\modules\webserver\www\app.js;paf\modules\webserver\www" ^
     "%REPO_ROOT%\src\main.py"
 
 if errorlevel 1 (
