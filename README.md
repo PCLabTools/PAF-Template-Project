@@ -137,6 +137,7 @@ This project includes GitHub Copilot skills that automate module management. See
 |---|---|
 | Initialize project environment | `paf-init` |
 | Create a new module | `paf-new-module` |
+| Add implementation to a factory module | `paf-new-implementation` |
 | Remove a module | `paf-remove-module` |
 | Add a module from git | `paf-pull-module` |
 | Run all tests | `test-runner` agent |
@@ -302,6 +303,48 @@ Follow instructions in #prompt:SKILL.md with these arguments: https://github.com
 3. Registers in `src/paf/modules/__init__.py`
 4. Adds import and instantiation to `src/main.py`
 5. For factory modules: reminds you to add `--hidden-import` to `scripts/build-exe.bat`
+
+---
+
+### 5. `paf-new-implementation` — Add an implementation to a factory module
+
+**File:** `.github/skills/paf-new-implementation/SKILL.md`
+
+Creates a new implementation file for an existing factory module by inheriting from its `Base<ClassName>`, generating all required abstract method overrides, registering the implementation key, and updating module exports.
+
+**Arguments:**
+- Factory module name _(required)_
+- Implementation name _(required)_
+
+If arguments are omitted, the skill asks for them and does not continue until both are provided.
+
+**Examples:**
+
+```
+Follow instructions in #prompt:SKILL.md with these arguments: paf-new-implementation motor_controller hardware
+```
+
+```
+Follow instructions in #prompt:SKILL.md with these arguments: paf-new-implementation sensor_reader mock
+```
+
+**What happens:**
+
+1. Validates the target module is factory-style
+2. Extracts abstract methods from `Base<ClassName>`
+3. Creates `src/paf/modules/<module_name>/<implementation_name>.py`
+4. Registers with `<FactoryClass>.register("<implementation_name>", <ImplementationClass>)`
+5. Updates `src/paf/modules/<module_name>/__init__.py` exports
+6. Runs module tests with unittest top-level set to `src`
+
+**Method body generation modes:**
+
+- `safe-stub` (default):
+    - `-> bool` returns `False`
+    - `-> None` or `Optional[...]` returns `None`
+    - Other annotated returns use `NotImplementedError` placeholders
+- `not-implemented`:
+    - Every generated method uses `raise NotImplementedError("TODO: implement <method_name>")`
 
 ---
 

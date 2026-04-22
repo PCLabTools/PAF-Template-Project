@@ -30,6 +30,7 @@ scripts/
   skills/
         paf-init/SKILL.md              # Initialize submodules, venv, and dependencies
     paf-new-module/SKILL.md        # Scaffold a new module
+        paf-new-implementation/SKILL.md # Add a new implementation to a factory module
     paf-remove-module/SKILL.md     # Remove a module
     paf-pull-module/SKILL.md       # Add a module from git as submodule
   prompts/
@@ -243,6 +244,7 @@ Load the relevant skill before working on these tasks:
 |---|---|
 | Initialize project environment | `.github/skills/paf-init/SKILL.md` |
 | Create a new module | `.github/skills/paf-new-module/SKILL.md` |
+| Add implementation to a factory module | `.github/skills/paf-new-implementation/SKILL.md` |
 | Remove a module | `.github/skills/paf-remove-module/SKILL.md` |
 | Add a module from git | `.github/skills/paf-pull-module/SKILL.md` |
 
