@@ -140,6 +140,7 @@ This project includes GitHub Copilot skills that automate module management. See
 | Add implementation to a factory module | `paf-new-implementation` |
 | Remove a module | `paf-remove-module` |
 | Add a module from git | `paf-pull-module` |
+| Initialize/convert module as submodule safely | `paf-init-module` |
 | Run all tests | `test-runner` agent |
 | Test report in chat | `/paf-test` prompt |
 
@@ -345,6 +346,40 @@ Follow instructions in #prompt:SKILL.md with these arguments: paf-new-implementa
     - Other annotated returns use `NotImplementedError` placeholders
 - `not-implemented`:
     - Every generated method uses `raise NotImplementedError("TODO: implement <method_name>")`
+
+---
+
+### 6. `paf-init-module` — Initialize or convert a module into a git submodule
+
+**File:** `.github/skills/paf-init-module/SKILL.md`
+
+Safely initializes a module path under `src/paf/modules/` as a git submodule, including conflict-aware conversion when a local folder already exists.
+
+**Arguments:**
+- Module name _(optional — if omitted, the skill asks before proceeding)_
+
+If the target module is already a git submodule, the skill stops immediately with no changes.
+
+**Examples:**
+
+```
+Follow instructions in #prompt:SKILL.md with these arguments: paf-init-module hello_world
+```
+
+```
+Follow instructions in #prompt:SKILL.md with these arguments: paf-init-module
+```
+
+**What happens:**
+
+1. Resolves module name (asks if missing)
+2. Checks whether `src/paf/modules/<module_name>` is already a submodule
+3. If not a submodule, asks for repository URL
+4. If a folder already exists, moves current files to `src/paf/modules/.tmp/...`
+5. Runs `git submodule add <url> src/paf/modules/<module_name>`
+6. Detects path overlaps between moved files and cloned submodule content
+7. Forces explicit user conflict choice before restore/merge
+8. Reports final state and any follow-up items
 
 ---
 

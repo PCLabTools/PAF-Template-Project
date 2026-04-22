@@ -33,6 +33,7 @@ scripts/
         paf-new-implementation/SKILL.md # Add a new implementation to a factory module
     paf-remove-module/SKILL.md     # Remove a module
     paf-pull-module/SKILL.md       # Add a module from git as submodule
+        paf-init-module/SKILL.md       # Initialize or convert module folder into a git submodule with conflict handling
   prompts/
     paf-test.prompt.md             # /paf-test — run all unit tests and report results
 ```
@@ -247,6 +248,7 @@ Load the relevant skill before working on these tasks:
 | Add implementation to a factory module | `.github/skills/paf-new-implementation/SKILL.md` |
 | Remove a module | `.github/skills/paf-remove-module/SKILL.md` |
 | Add a module from git | `.github/skills/paf-pull-module/SKILL.md` |
+| Initialize/convert module as submodule safely | `.github/skills/paf-init-module/SKILL.md` |
 
 Run `/paf-test` in chat to execute all unit tests and produce a formatted report.
 
