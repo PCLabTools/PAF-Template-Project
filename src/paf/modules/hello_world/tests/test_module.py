@@ -5,11 +5,12 @@ import unittest
 import time
 import sys
 import os
+from queue import PriorityQueue
 
 # Add parent directories to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
-from paf.communication import Protocol, Message, Module
+from paf.communication import Protocol, Message
 from paf.modules.hello_world.module import HelloWorld
 
 
@@ -60,27 +61,28 @@ class TestHelloWorld(unittest.TestCase):
         self.protocol.send_action("test_hello_world_debug", "shutdown")
         module.thread.join(timeout=1.0)
 
-    def test_handle_message_custom_action(self):
-        """Test handle_message with custom_action command"""
+    def test_handle_message_greet_via_request(self):
+        """Test greet command returns expected response through protocol."""
         module = HelloWorld("test_hello_world", self.protocol, debug=0)
-        msg = Message("test_hello_world", "custom_action", {"key": "value"})
 
-        result = module.handle_message(msg)
-        self.assertFalse(result)  # Should return False to continue running
+        response = self.protocol.send_request("test_hello_world", "greet", timeout=1.0)
+        self.assertEqual(response, {"response": "Hello, World!"})
 
-        # Clean up
         self.protocol.send_action("test_hello_world", "shutdown")
         module.thread.join(timeout=1.0)
 
-    def test_message_custom_action(self):
-        """Test message_custom_action method directly"""
+    def test_greet_method_direct(self):
+        """Test greet method sends response and keeps module running."""
         module = HelloWorld("test_hello_world", self.protocol, debug=0)
-        msg = Message("test_hello_world", "custom_action", {"data": "test"})
+        response_queue = PriorityQueue()
+        msg = Message("test_hello_world", "greet", source=response_queue)
 
-        result = module.message_custom_action(msg)
-        self.assertFalse(result)  # Returns False
+        result = module.greet(msg)
+        self.assertFalse(result)
 
-        # Clean up
+        _, response = response_queue.get(timeout=1.0)
+        self.assertEqual(response, {"response": "Hello, World!"})
+
         self.protocol.send_action("test_hello_world", "shutdown")
         module.thread.join(timeout=1.0)
 
@@ -96,15 +98,27 @@ class TestHelloWorld(unittest.TestCase):
         self.protocol.send_action("test_hello_world", "shutdown")
         module.thread.join(timeout=1.0)
 
-    def test_background_task_running(self):
-        """Test background task runs when enabled"""
+    def test_start_stop_background_task(self):
+        """Test start and stop commands toggle background task state."""
         module = HelloWorld("test_hello_world", self.protocol, debug=0)
 
-        # Start background task
         self.protocol.send_action("test_hello_world", "start")
-        time.sleep(0.2)  # Give it time to start
-
+        time.sleep(0.2)
         self.assertTrue(module.background_task_running)
 
-        # Clean up
+        self.protocol.send_action("test_hello_world", "stop")
+        time.sleep(1.2)
+        self.assertFalse(module.background_task_running)
+
         self.protocol.send_action("test_hello_world", "shutdown")
+        module.thread.join(timeout=1.0)
+
+    def test_status_reports_running_state(self):
+        """Test status command returns expected module state string."""
+        module = HelloWorld("test_hello_world", self.protocol, debug=0)
+
+        status = self.protocol.send_request("test_hello_world", "status", timeout=1.0)
+        self.assertEqual(status, "Module test_hello_world is not running")
+
+        self.protocol.send_action("test_hello_world", "shutdown")
+        module.thread.join(timeout=1.0)
