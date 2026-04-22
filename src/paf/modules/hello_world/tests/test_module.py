@@ -98,6 +98,88 @@ class TestHelloWorld(unittest.TestCase):
         self.protocol.send_action("test_hello_world", "shutdown")
         module.thread.join(timeout=1.0)
 
+    def test_handle_message_start(self):
+        """Test start command begins background task."""
+        module = HelloWorld("test_hello_world", self.protocol, debug=0)
+        
+        # Initially background task should not be running
+        self.assertFalse(module.background_task_running)
+        
+        # Send start command
+        self.protocol.send_action("test_hello_world", "start")
+        time.sleep(0.2)  # Allow time for start to process
+        
+        # Background task should now be running
+        self.assertTrue(module.background_task_running)
+        
+        # Clean up
+        self.protocol.send_action("test_hello_world", "shutdown")
+        module.thread.join(timeout=1.0)
+
+    def test_handle_message_stop(self):
+        """Test stop command halts background task."""
+        module = HelloWorld("test_hello_world", self.protocol, debug=0)
+        
+        # Start the background task
+        self.protocol.send_action("test_hello_world", "start")
+        time.sleep(0.2)
+        self.assertTrue(module.background_task_running)
+        
+        # Send stop command
+        self.protocol.send_action("test_hello_world", "stop")
+        time.sleep(0.2)
+        
+        # Background task should now be stopped
+        self.assertFalse(module.background_task_running)
+        
+        # Clean up
+        self.protocol.send_action("test_hello_world", "shutdown")
+        module.thread.join(timeout=1.0)
+
+    def test_handle_message_status_not_running(self):
+        """Test status command reports correct state when not running."""
+        module = HelloWorld("test_hello_world", self.protocol, debug=0)
+        
+        response = self.protocol.send_request("test_hello_world", "status", timeout=1.0)
+        self.assertIn("not running", response)
+        
+        # Clean up
+        self.protocol.send_action("test_hello_world", "shutdown")
+        module.thread.join(timeout=1.0)
+
+    def test_handle_message_status_running(self):
+        """Test status command reports correct state when running."""
+        module = HelloWorld("test_hello_world", self.protocol, debug=0)
+        
+        # Start background task
+        self.protocol.send_action("test_hello_world", "start")
+        time.sleep(0.2)
+        
+        response = self.protocol.send_request("test_hello_world", "status", timeout=1.0)
+        self.assertIn("running", response)
+        
+        # Clean up
+        self.protocol.send_action("test_hello_world", "shutdown")
+        module.thread.join(timeout=1.0)
+
+    def test_start_stop_cycle(self):
+        """Test multiple start/stop cycles work correctly (validates thread pooling fix)."""
+        module = HelloWorld("test_hello_world", self.protocol, debug=0)
+        
+        # Cycle start/stop multiple times to ensure thread pooling works
+        for i in range(3):
+            self.protocol.send_action("test_hello_world", "start")
+            time.sleep(0.2)
+            self.assertTrue(module.background_task_running, f"Background task should be running on iteration {i}")
+            
+            self.protocol.send_action("test_hello_world", "stop")
+            time.sleep(0.2)
+            self.assertFalse(module.background_task_running, f"Background task should be stopped on iteration {i}")
+        
+        # Clean up
+        self.protocol.send_action("test_hello_world", "shutdown")
+        module.thread.join(timeout=1.0)
+
     def test_start_stop_background_task(self):
         """Test start and stop commands toggle background task state."""
         module = HelloWorld("test_hello_world", self.protocol, debug=0)
