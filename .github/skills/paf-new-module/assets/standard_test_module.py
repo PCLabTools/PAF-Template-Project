@@ -110,6 +110,88 @@ class Test{{ClassName}}(unittest.TestCase):
         self.protocol.send_action("test_{{module_name}}", "shutdown")
         module.thread.join(timeout=1.0)
 
+    def test_handle_message_start(self):
+        """Test start command begins background task."""
+        module = {{ClassName}}("test_{{module_name}}", self.protocol, debug=0)
+        
+        # Initially background task should not be running
+        self.assertFalse(module.background_task_running)
+        
+        # Send start command
+        self.protocol.send_action("test_{{module_name}}", "start")
+        time.sleep(0.2)  # Allow time for start to process
+        
+        # Background task should now be running
+        self.assertTrue(module.background_task_running)
+        
+        # Clean up
+        self.protocol.send_action("test_{{module_name}}", "shutdown")
+        module.thread.join(timeout=1.0)
+
+    def test_handle_message_stop(self):
+        """Test stop command halts background task."""
+        module = {{ClassName}}("test_{{module_name}}", self.protocol, debug=0)
+        
+        # Start the background task
+        self.protocol.send_action("test_{{module_name}}", "start")
+        time.sleep(0.2)
+        self.assertTrue(module.background_task_running)
+        
+        # Send stop command
+        self.protocol.send_action("test_{{module_name}}", "stop")
+        time.sleep(0.2)
+        
+        # Background task should now be stopped
+        self.assertFalse(module.background_task_running)
+        
+        # Clean up
+        self.protocol.send_action("test_{{module_name}}", "shutdown")
+        module.thread.join(timeout=1.0)
+
+    def test_handle_message_status_not_running(self):
+        """Test status command reports correct state when not running."""
+        module = {{ClassName}}("test_{{module_name}}", self.protocol, debug=0)
+        
+        response = self.protocol.send_request("test_{{module_name}}", "status", timeout=1.0)
+        self.assertIn("not running", response)
+        
+        # Clean up
+        self.protocol.send_action("test_{{module_name}}", "shutdown")
+        module.thread.join(timeout=1.0)
+
+    def test_handle_message_status_running(self):
+        """Test status command reports correct state when running."""
+        module = {{ClassName}}("test_{{module_name}}", self.protocol, debug=0)
+        
+        # Start background task
+        self.protocol.send_action("test_{{module_name}}", "start")
+        time.sleep(0.2)
+        
+        response = self.protocol.send_request("test_{{module_name}}", "status", timeout=1.0)
+        self.assertIn("running", response)
+        
+        # Clean up
+        self.protocol.send_action("test_{{module_name}}", "shutdown")
+        module.thread.join(timeout=1.0)
+
+    def test_start_stop_cycle(self):
+        """Test multiple start/stop cycles work correctly (validates thread pooling fix)."""
+        module = {{ClassName}}("test_{{module_name}}", self.protocol, debug=0)
+        
+        # Cycle start/stop multiple times to ensure thread pooling works
+        for i in range(3):
+            self.protocol.send_action("test_{{module_name}}", "start")
+            time.sleep(0.2)
+            self.assertTrue(module.background_task_running, f"Background task should be running on iteration {i}")
+            
+            self.protocol.send_action("test_{{module_name}}", "stop")
+            time.sleep(0.2)
+            self.assertFalse(module.background_task_running, f"Background task should be stopped on iteration {i}")
+        
+        # Clean up
+        self.protocol.send_action("test_{{module_name}}", "shutdown")
+        module.thread.join(timeout=1.0)
+
 
 if __name__ == '__main__':
     unittest.main()
