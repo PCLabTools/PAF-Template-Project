@@ -141,6 +141,7 @@ This project includes GitHub Copilot skills that automate module management. See
 | Remove a module | `paf-remove-module` |
 | Add a module from git | `paf-pull-module` |
 | Initialize/convert module as submodule safely | `paf-init-module` |
+| Code review (project or module) | `PAF Code Reviewer` agent |
 | Run all tests | `test-runner` agent |
 | Test report in chat | `/paf-test` prompt |
 
@@ -380,6 +381,47 @@ Follow instructions in #prompt:SKILL.md with these arguments: paf-init-module
 6. Detects path overlaps between moved files and cloned submodule content
 7. Forces explicit user conflict choice before restore/merge
 8. Reports final state and any follow-up items
+
+---
+
+### 7. `PAF Code Reviewer` — Automated code review agent
+
+**Invocation:** Request code review in Copilot Chat using the `PAF Code Reviewer` agent
+
+Provides automated architecture review and best-practice analysis for the entire project or specific modules. Validates module implementations against PAF conventions, identifies potential issues, and suggests improvements.
+
+**When to use:**
+
+- Reviewing a new module before merging
+- Validating architecture changes
+- Checking for compliance with PAF patterns
+- Bug-risk assessment or regression review
+- Scoping review to a specific module
+
+**Examples:**
+
+```
+Review the entire project for PAF compliance
+```
+
+```
+@PAF Code Reviewer review hello_world module for architecture issues
+```
+
+```
+@PAF Code Reviewer perform regression review on sensor_reader
+```
+
+**What it checks:**
+
+- Module initialization patterns (`self.debug` assignment before `super().__init__()`)
+- `handle_message` implementation and delegation to base class
+- Message handler return values (True for shutdown, False for continue)
+- Background task setup and lifecycle management
+- Factory module registration and implementation pattern
+- Thread safety and protocol usage
+- Compliance with naming conventions
+- Test coverage and test pattern adherence
 
 ---
 
