@@ -1,9 +1,8 @@
 ---
-name: PAF Test Runner
+name: paf-test
 description: "Run all PAF module unit tests and report results. Use when: run tests, test all modules, check test results, test report, unit tests, paf-test."
 argument-hint: "Optional: specific module name to test, or leave blank for all"
 agent: agent
-tools: [run_in_terminal, file_search, read_file]
 ---
 
 Run all PAF module unit tests and produce a formatted report.
@@ -17,8 +16,9 @@ Run all PAF module unit tests and produce a formatted report.
 
 2. Derive the unique set of module test folders from the discovered files (e.g. `src/paf/modules/hello_world/tests`). For each module, run its tests directly using Python's unittest from the project root:
    ```
-   python -m unittest discover -s src/paf/modules/<module_name>/tests -p "test_*.py" -v 2>&1
+   python -m unittest discover -s src/paf/modules/<module_name>/tests -t src -p "test_*.py" -v 2>&1
    ```
+   The `-t src` flag sets `src` as unittest's top-level import root so `from paf...` imports resolve consistently.
    The `-v` flag produces per-test output. `2>&1` captures stderr (where unittest writes) alongside stdout.
 
    Run all modules in a single terminal session, one after another.
