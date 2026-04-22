@@ -23,7 +23,7 @@ This template project provides:
 
 Each module is a class that extends `Module` and runs in its own thread. Modules do not call each other directly — they send messages.
 
-```
+```text
 ┌──────────┐        ┌──────────┐        ┌──────────┐
 │  Main    │        │ Module A │        │ Module B │
 │ (thread) │──────▶ │ (thread) │──────▶ │ (thread) │
@@ -49,7 +49,7 @@ Message(address="sensor_reader", command="read", data={"channel": 1})
 ### Module Types
 
 | Type | Description |
-|---|---|
+| --- | --- |
 | **Standard** | Extends `Module` directly. Simple, single-implementation modules. |
 | **Factory** | Uses a factory pattern with a `Base<Name>` ABC and swappable implementations (e.g. `Simulated<Name>` for testing). |
 
@@ -57,7 +57,7 @@ Message(address="sensor_reader", command="read", data={"channel": 1})
 
 ## Project Structure
 
-```
+```text
 src/
 ├── main.py                        # Application entry point
 └── paf/
@@ -121,7 +121,7 @@ python -m unittest discover -s src -p "test_*.py"
 
 You can also run tests directly from Copilot Chat using the `/paf-test` prompt, which discovers all module tests, runs them, and returns a formatted report with a summary table, per-module details, and failure output. Type `/paf-test` in the chat panel, or target a specific module:
 
-```
+```text
 /paf-test hello_world
 ```
 
@@ -134,7 +134,7 @@ This project includes GitHub Copilot skills that automate module management. See
 **Quick reference:**
 
 | Task | Skill |
-|---|---|
+| --- | --- |
 | Initialize project environment | `paf-init` |
 | Create a new module | `paf-new-module` |
 | Add implementation to a factory module | `paf-new-implementation` |
@@ -161,7 +161,7 @@ Produces a standalone `.exe` in `dist/` via PyInstaller.
 
 ---
 
-# Developer Guide: Using PAF Copilot Skills
+## Developer Guide: Using PAF Copilot Skills
 
 This project includes a set of GitHub Copilot skills that automate common PAF module tasks directly from the chat panel. This guide explains what each skill does and how to invoke it.
 
@@ -171,7 +171,7 @@ This project includes a set of GitHub Copilot skills that automate common PAF mo
 
 Open the Copilot Chat panel in VS Code and attach the skill's prompt file using the `#` file reference, then describe your intent. The simplest form is:
 
-```
+```text
 Follow instructions in #prompt:SKILL.md with these arguments: <args>
 ```
 
@@ -188,16 +188,17 @@ Each skill also has a natural-language description that allows Copilot to invoke
 Bootstraps the project so `src/main.py` can run: initializes git submodules, creates or reuses `.venv`, installs dependencies from available manifests, validates imports, and performs an optional startup smoke check.
 
 **Arguments:**
+
 - `--recreate-venv` _(optional — force rebuild of `.venv`)_
 - `--skip-main-check` _(optional — skip startup smoke check)_
 
 **Examples:**
 
-```
+```text
 Follow instructions in #prompt:SKILL.md with these arguments: paf-init
 ```
 
-```
+```text
 Follow instructions in #prompt:SKILL.md with these arguments: paf-init --recreate-venv
 ```
 
@@ -210,6 +211,7 @@ Follow instructions in #prompt:SKILL.md with these arguments: paf-init --recreat
 Creates a fully wired PAF module from scratch: generates all source files, registers the export in `src/paf/modules/__init__.py`, and instantiates it in `src/main.py`. Optionally invokes automated code review to validate architecture compliance.
 
 **Arguments:**
+
 - Module name (PascalCase)
 - Module type: `standard` or `factory`
 - Description _(optional — will ask if omitted)_
@@ -218,22 +220,22 @@ Creates a fully wired PAF module from scratch: generates all source files, regis
 
 **Examples:**
 
-```
+```text
 Follow instructions in #prompt:SKILL.md with these arguments: SensorReader standard
 ```
 
-```
+```text
 Follow instructions in #prompt:SKILL.md with these arguments: MotorController factory --review
 ```
 
-```
+```text
 Create a new module called DataLogger standard with code review
 ```
 
 **What gets created** (standard example for `SensorReader`):
 
 | File | Description |
-|---|---|
+| --- | --- |
 | `src/paf/modules/sensor_reader/module.py` | Module class with `handle_message` and `background_task` |
 | `src/paf/modules/sensor_reader/__init__.py` | Public export |
 | `src/paf/modules/sensor_reader/tests/test_module.py` | Unit tests (includes start/stop/status and cycle tests) |
@@ -265,17 +267,18 @@ When `--review` is provided, the skill automatically invokes the PAF Code Review
 Safely removes a PAF module — deletes its folder and strips all references from `__init__.py` and `main.py`. Handles both regular folders and git submodules correctly.
 
 **Arguments:**
+
 - Module name
 
 > ⚠️ Built-in modules (`standard_template`, `factory_template`, `webserver`) trigger an explicit confirmation prompt before proceeding.
 
 **Examples:**
 
-```
+```text
 Follow instructions in #prompt:SKILL.md with these arguments: SensorReader
 ```
 
-```
+```text
 Follow instructions in #prompt:SKILL.md with these arguments: webserver
 ```
 
@@ -298,16 +301,17 @@ Follow instructions in #prompt:SKILL.md with these arguments: webserver
 Pulls a remote PAF module as a git submodule, then registers and instantiates it — the reverse of `paf-remove-module`.
 
 **Arguments:**
+
 - Git repository URL
 - Folder name _(optional — inferred from the repo name by default)_
 
 **Examples:**
 
-```
+```text
 Follow instructions in #prompt:SKILL.md with these arguments: https://github.com/PCLabTools/PAF-Module-Simple-Web-Server.git
 ```
 
-```
+```text
 Follow instructions in #prompt:SKILL.md with these arguments: https://github.com/PCLabTools/PAF-Module-Standard-Template.git standard_template
 ```
 
@@ -328,6 +332,7 @@ Follow instructions in #prompt:SKILL.md with these arguments: https://github.com
 Creates a new implementation file for an existing factory module by inheriting from its `Base<ClassName>`, generating all required abstract method overrides, registering the implementation key, and updating module exports.
 
 **Arguments:**
+
 - Factory module name _(required)_
 - Implementation name _(required)_
 
@@ -335,11 +340,11 @@ If arguments are omitted, the skill asks for them and does not continue until bo
 
 **Examples:**
 
-```
+```text
 Follow instructions in #prompt:SKILL.md with these arguments: paf-new-implementation motor_controller hardware
 ```
 
-```
+```text
 Follow instructions in #prompt:SKILL.md with these arguments: paf-new-implementation sensor_reader mock
 ```
 
@@ -354,12 +359,15 @@ Follow instructions in #prompt:SKILL.md with these arguments: paf-new-implementa
 
 **Method body generation modes:**
 
-- `safe-stub` (default):
-    - `-> bool` returns `False`
-    - `-> None` or `Optional[...]` returns `None`
-    - Other annotated returns use `NotImplementedError` placeholders
-- `not-implemented`:
-    - Every generated method uses `raise NotImplementedError("TODO: implement <method_name>")`
+### `safe-stub` (default)
+
+- `-> bool` returns `False`
+- `-> None` or `Optional[...]` returns `None`
+- Other annotated returns use `NotImplementedError` placeholders
+
+### `not-implemented`
+
+- Every generated method uses `raise NotImplementedError("TODO: implement <method_name>")`
 
 ---
 
@@ -370,17 +378,18 @@ Follow instructions in #prompt:SKILL.md with these arguments: paf-new-implementa
 Safely initializes a module path under `src/paf/modules/` as a git submodule, including conflict-aware conversion when a local folder already exists.
 
 **Arguments:**
+
 - Module name _(optional — if omitted, the skill asks before proceeding)_
 
 If the target module is already a git submodule, the skill stops immediately with no changes.
 
 **Examples:**
 
-```
+```text
 Follow instructions in #prompt:SKILL.md with these arguments: paf-init-module hello_world
 ```
 
-```
+```text
 Follow instructions in #prompt:SKILL.md with these arguments: paf-init-module
 ```
 
@@ -413,15 +422,15 @@ Provides automated architecture review and best-practice analysis for the entire
 
 **Examples:**
 
-```
+```text
 Review the entire project for PAF compliance
 ```
 
-```
+```text
 @PAF Code Reviewer review hello_world module for architecture issues
 ```
 
-```
+```text
 @PAF Code Reviewer perform regression review on sensor_reader
 ```
 
@@ -441,7 +450,7 @@ Review the entire project for PAF compliance
 ## Naming Conventions
 
 | Input | Convention | Example |
-|---|---|---|
+| --- | --- | --- |
 | Module name argument | PascalCase | `SensorReader` |
 | Folder name | snake_case | `sensor_reader` |
 | Module address (in `main.py`) | snake_case | `"sensor_reader"` |

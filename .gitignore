@@ -109,7 +109,7 @@ dmypy.json
 .pyre/
 
 # IDEs
-.vscode/
+.vscode/**
 .idea/
 *.swp
 *.swo
@@ -123,3 +123,6 @@ dmypy.json
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Exceptions
+!.vscode/extensions.json
