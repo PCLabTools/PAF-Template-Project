@@ -1,1 +1,8 @@
+# Human README
 README.md
+
+# Build outputs
+build/**
+dist/**
+**/__pycache__/**
+**/*.pyc
