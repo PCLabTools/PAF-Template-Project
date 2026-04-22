@@ -45,7 +45,7 @@ class Main:
 
         while True:
             try:
-                message = self.protocol.receive_message(self.address, timeout=1)
+                message = self.protocol.receive_message(self.address, timeout=0.2)
                 if self.handle_message(message):
                     break
             except TimeoutError:

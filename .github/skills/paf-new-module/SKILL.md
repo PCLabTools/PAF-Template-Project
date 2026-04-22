@@ -1,7 +1,7 @@
 ---
 name: paf-new-module
 description: "Create a new PAF module from scratch. Use when: adding a module, creating a new module, new standard module, new factory module, new actor, scaffold module."
-argument-hint: "<module-name> [standard|factory]"
+argument-hint: "<module-name> [standard|factory] [--review]"
 ---
 
 # New PAF Module
@@ -24,6 +24,7 @@ Collect from the user before proceeding (ask if not provided in the invocation):
 2. **Module type** — `standard` or `factory`
 3. **Description** — one-line description for the module's docstring
 4. **Author** — for the file header (default: `"Your Name (your.email@example.com)"`)
+5. **`--review` flag** _(optional)_ — If provided, automatically invoke the PAF Code Reviewer agent after module creation to validate architecture compliance
 
 ## Procedure
 
@@ -108,20 +109,66 @@ Add instantiation in `Main.__init__()`:
 
 For factory type, also add a `send_action` call in `Main.run()` following the existing pattern.
 
-### Step 5 — Factory-only: PyInstaller hidden import
+### Step 5 — Optional: Code review (if `--review` flag provided)
+
+If the user provided the `--review` flag:
+
+1. Invoke the **PAF Code Reviewer agent** with the newly created module path
+2. Report review findings to the user:
+   - **No issues:** Confirm module passes PAF compliance checks
+   - **Issues found:** Display violations with severity (high/medium/low)
+3. For **high-severity issues**, ask user permission before proceeding:
+   - Auto-fix structural issues if possible (naming, imports, file organization)
+   - Defer business logic issues to the user
+4. Include review summary in the final confirmation
+
+**Example workflow:**
+
+```
+✓ Created module SensorReader
+✓ Registered in src/paf/modules/__init__.py
+✓ Instantiated in src/main.py
+
+[Invoking PAF Code Reviewer...]
+
+Review Results for sensor_reader:
+• No high-severity issues found
+• 1 medium-priority: background_task uses blocking sleep without timeout guard
+  → Recommendation: Add timeout-aware polling loop
+
+✓ Module ready for development
+```
+
+### Step 6 — Factory-only: PyInstaller hidden import
 
 For factory modules, remind the user to add to `scripts/build-exe.bat`:
 ```
 --hidden-import paf.modules.<module_name>.simulated ^
 ```
 (immediately after the existing `--hidden-import` lines)
+## Examples
 
-### Step 6 — Confirm
+### Create a standard module with review
+```
+Create a new module called SensorReader standard --review
+```
+
+### Create a factory module
+```
+Create a factory module named MotorController
+```
+
+### Create and immediately review
+```
+Add a module named DataLogger standard with code review
+```
+### Step 7 — Confirm
 
 List all files created/modified. Remind the user to:
 - Fill in any `# TODO:` placeholders in the new module
 - Run per-module tests: `src/paf/modules/<module_name>/scripts/run-tests.bat`
 - Run all tests: `python -m unittest discover -s src -p "test_*.py"`
+- Review code review findings (if `--review` was used) and address medium/low-priority recommendations
 
 ## Key Conventions (from codebase)
 

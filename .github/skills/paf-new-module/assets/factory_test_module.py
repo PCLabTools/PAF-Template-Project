@@ -39,7 +39,7 @@ class Test{{ClassName}}(unittest.TestCase):
             try:
                 if module.background_task_running:
                     self.protocol.send_action(module.address, "stop")
-                    time.sleep(0.05)
+                    time.sleep(0.1)
             except Exception:
                 pass
             try:
@@ -50,12 +50,9 @@ class Test{{ClassName}}(unittest.TestCase):
                 module.thread.join(timeout=1.0)
             except Exception:
                 pass
-            try:
-                module.background_task_running = False
-                if module.background_task_thread.is_alive():
-                    module.background_task_thread.join(timeout=1.0)
-            except Exception:
-                pass
+
+        # Wait for threads to fully terminate
+        time.sleep(0.5)
 
         for module_name in list(self.protocol.get_registered_modules()):
             try:

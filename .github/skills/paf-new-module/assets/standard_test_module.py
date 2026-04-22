@@ -27,10 +27,10 @@ class Test{{ClassName}}(unittest.TestCase):
                 self.protocol.send_action(module_name, "shutdown")
             except:
                 pass
-        # Wait a bit for threads to finish
-        time.sleep(0.1)
+        # Wait for threads to fully terminate
+        time.sleep(0.5)
         # Clean up any registered modules
-        for module_name in self.protocol.get_registered_modules():
+        for module_name in list(self.protocol.get_registered_modules()):
             try:
                 self.protocol.unregister_module(module_name)
             except:

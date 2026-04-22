@@ -207,13 +207,14 @@ Follow instructions in #prompt:SKILL.md with these arguments: paf-init --recreat
 
 **File:** `.github/skills/paf-new-module/SKILL.md`
 
-Creates a fully wired PAF module from scratch: generates all source files, registers the export in `src/paf/modules/__init__.py`, and instantiates it in `src/main.py`.
+Creates a fully wired PAF module from scratch: generates all source files, registers the export in `src/paf/modules/__init__.py`, and instantiates it in `src/main.py`. Optionally invokes automated code review to validate architecture compliance.
 
 **Arguments:**
 - Module name (PascalCase)
 - Module type: `standard` or `factory`
 - Description _(optional — will ask if omitted)_
 - Author _(optional — defaults to placeholder)_
+- `--review` _(optional — automatically review with PAF Code Reviewer agent after creation)_
 
 **Examples:**
 
@@ -222,7 +223,11 @@ Follow instructions in #prompt:SKILL.md with these arguments: SensorReader stand
 ```
 
 ```
-Follow instructions in #prompt:SKILL.md with these arguments: MotorController factory
+Follow instructions in #prompt:SKILL.md with these arguments: MotorController factory --review
+```
+
+```
+Create a new module called DataLogger standard with code review
 ```
 
 **What gets created** (standard example for `SensorReader`):
@@ -231,7 +236,7 @@ Follow instructions in #prompt:SKILL.md with these arguments: MotorController fa
 |---|---|
 | `src/paf/modules/sensor_reader/module.py` | Module class with `handle_message` and `background_task` |
 | `src/paf/modules/sensor_reader/__init__.py` | Public export |
-| `src/paf/modules/sensor_reader/tests/test_module.py` | Unit tests |
+| `src/paf/modules/sensor_reader/tests/test_module.py` | Unit tests (includes start/stop/status and cycle tests) |
 | `src/paf/modules/sensor_reader/tests/__init__.py` | Test package marker |
 | `src/paf/modules/sensor_reader/scripts/run-tests.bat` | Per-module test runner |
 | `src/paf/modules/sensor_reader/.gitignore` | Ignores `__pycache__` |
@@ -241,7 +246,15 @@ Follow instructions in #prompt:SKILL.md with these arguments: MotorController fa
 - `src/paf/modules/__init__.py` — adds `from .sensor_reader import SensorReader` and updates `__all__`
 - `src/main.py` — adds import, instantiation in `__init__`, and `send_action` call in `run()`
 
-> **Factory modules** additionally generate `simulated.py` and `Base`/`Simulated` class variants, and prompt you to add a `--hidden-import` line to `scripts/build-exe.bat`.
+**Code Review (with `--review` flag):**
+
+When `--review` is provided, the skill automatically invokes the PAF Code Reviewer agent to validate the new module against PAF conventions:
+
+- **High-severity issues:** Reported and may be auto-fixed (naming, structure) with user confirmation
+- **Medium/Low-priority:** Displayed as recommendations for manual review
+- **Report:** Included in final confirmation before completion
+
+> **Factory modules** additionally generate `simulated.py` and `Base`/`Simulated` class variants, and prompt you to add a `--hidden-import` line to `scripts/build-exe.bat`. Review is especially useful for factory modules to validate implementation patterns.
 
 ---
 
