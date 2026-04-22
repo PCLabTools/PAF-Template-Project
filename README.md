@@ -80,6 +80,8 @@ scripts/
 
 ## Getting Started
 
+Prefer guided setup in Copilot Chat? Use the `paf-init` skill at `.github/skills/paf-init/SKILL.md` to initialize submodules, `.venv`, and dependencies automatically.
+
 ### 1. Clone with submodules
 
 ```bash
@@ -133,6 +135,7 @@ This project includes GitHub Copilot skills that automate module management. See
 
 | Task | Skill |
 |---|---|
+| Initialize project environment | `paf-init` |
 | Create a new module | `paf-new-module` |
 | Remove a module | `paf-remove-module` |
 | Add a module from git | `paf-pull-module` |
@@ -175,7 +178,29 @@ Each skill also has a natural-language description that allows Copilot to invoke
 
 ## Available Skills
 
-### 1. `paf-new-module` — Create a new module
+### 1. `paf-init` — Initialize the development environment
+
+**File:** `.github/skills/paf-init/SKILL.md`
+
+Bootstraps the project so `src/main.py` can run: initializes git submodules, creates or reuses `.venv`, installs dependencies from available manifests, validates imports, and performs an optional startup smoke check.
+
+**Arguments:**
+- `--recreate-venv` _(optional — force rebuild of `.venv`)_
+- `--skip-main-check` _(optional — skip startup smoke check)_
+
+**Examples:**
+
+```
+Follow instructions in #prompt:SKILL.md with these arguments: paf-init
+```
+
+```
+Follow instructions in #prompt:SKILL.md with these arguments: paf-init --recreate-venv
+```
+
+---
+
+### 2. `paf-new-module` — Create a new module
 
 **File:** `.github/skills/paf-new-module/SKILL.md`
 
@@ -217,7 +242,7 @@ Follow instructions in #prompt:SKILL.md with these arguments: MotorController fa
 
 ---
 
-### 2. `paf-remove-module` — Remove a module
+### 3. `paf-remove-module` — Remove a module
 
 **File:** `.github/skills/paf-remove-module/SKILL.md`
 
@@ -250,7 +275,7 @@ Follow instructions in #prompt:SKILL.md with these arguments: webserver
 
 ---
 
-### 3. `paf-pull-module` — Add a module from a git repository
+### 4. `paf-pull-module` — Add a module from a git repository
 
 **File:** `.github/skills/paf-pull-module/SKILL.md`
 
