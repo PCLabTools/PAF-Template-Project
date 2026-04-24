@@ -207,8 +207,6 @@ Follow instructions in #prompt:SKILL.md with these arguments: paf-init --recreat
 
 ---
 
-### 2. `paf-new-module` — Create a new module
-
 ### 2. `paf-init-project` — Define project intent and module plan
 
 **File:** `.github/skills/paf-init-project/SKILL.md`
@@ -301,7 +299,7 @@ When `--review` is provided, the skill automatically invokes the PAF Code Review
 
 ---
 
-### 3. `paf-remove-module` — Remove a module
+### 4. `paf-remove-module` — Remove a module
 
 **File:** `.github/skills/paf-remove-module/SKILL.md`
 
@@ -335,7 +333,7 @@ Follow instructions in #prompt:SKILL.md with these arguments: webserver
 
 ---
 
-### 4. `paf-pull-module` — Add a module from a git repository
+### 5. `paf-pull-module` — Add a module from a git repository
 
 **File:** `.github/skills/paf-pull-module/SKILL.md`
 
@@ -366,7 +364,7 @@ Follow instructions in #prompt:SKILL.md with these arguments: https://github.com
 
 ---
 
-### 5. `paf-new-implementation` — Add an implementation to a factory module
+### 6. `paf-new-implementation` — Add an implementation to a factory module
 
 **File:** `.github/skills/paf-new-implementation/SKILL.md`
 
@@ -412,7 +410,7 @@ Follow instructions in #prompt:SKILL.md with these arguments: paf-new-implementa
 
 ---
 
-### 6. `paf-init-module` — Initialize or convert a module into a git submodule
+### 7. `paf-init-module` — Initialize or convert a module into a git submodule
 
 **File:** `.github/skills/paf-init-module/SKILL.md`
 
@@ -447,7 +445,7 @@ Follow instructions in #prompt:SKILL.md with these arguments: paf-init-module
 
 ---
 
-### 7. `PAF Code Reviewer` — Automated code review agent
+### 8. `PAF Code Reviewer` — Automated code review agent
 
 **Invocation:** Request code review in Copilot Chat using the `PAF Code Reviewer` agent
 
