@@ -2,6 +2,8 @@
 
 A starting point for building **multi-threaded Python applications** using the **Python Agent Framework (PAF)** — a lightweight, message-passing framework that lets independent modules communicate with each other through a unified protocol.
 
+Project purpose and intent are documented in [PROJECT.md](PROJECT.md). In this template repository, it explains template-level intent; after forking, update it with project-specific intent.
+
 ---
 
 ## Overview
@@ -136,6 +138,7 @@ This project includes GitHub Copilot skills that automate module management. See
 | Task | Skill |
 | --- | --- |
 | Initialize project environment | `paf-init` |
+| Define project intent and module plan | `paf-init-project` |
 | Create a new module | `paf-new-module` |
 | Add implementation to a factory module | `paf-new-implementation` |
 | Remove a module | `paf-remove-module` |
@@ -205,6 +208,44 @@ Follow instructions in #prompt:SKILL.md with these arguments: paf-init --recreat
 ---
 
 ### 2. `paf-new-module` — Create a new module
+
+### 2. `paf-init-project` — Define project intent and module plan
+
+**File:** `.github/skills/paf-init-project/SKILL.md`
+
+Runs a structured project-start discovery workflow that interviews the user, refines project intent, updates `PROJECT.md`, optionally records reusable constraints in `MEMORY.md`, and breaks high-level goals into candidate PAF modules.
+
+**Arguments:**
+
+- `--max-rounds <1-20>` _(optional — maximum number of interview rounds, default `20`)_
+- `--skip-memory` _(optional — do not write reusable rules to `MEMORY.md`)_
+
+**Examples:**
+
+```text
+Follow instructions in #prompt:SKILL.md with these arguments: paf-init-project
+```
+
+```text
+Follow instructions in #prompt:SKILL.md with these arguments: paf-init-project --max-rounds 12
+```
+
+```text
+Initialize this fork by interviewing me and mapping the goals into PAF modules
+```
+
+**What it does:**
+
+1. Reads existing `PROJECT.md` and `MEMORY.md`
+2. Runs an iterative interview with explicit continue/finish control after each question
+3. Merges and preserves existing project intent by default, replacing older content only when explicitly requested or clearly superseded by newer user input
+4. Produces a structured project definition in `PROJECT.md`
+5. Identifies candidate PAF modules, responsibilities, and message boundaries
+6. Stores only concise reusable rules in `MEMORY.md`
+
+---
+
+### 3. `paf-new-module` — Create a new module
 
 **File:** `.github/skills/paf-new-module/SKILL.md`
 

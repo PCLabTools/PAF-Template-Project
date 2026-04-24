@@ -4,6 +4,26 @@ This is a **Python Actor Framework (PAF)** template project. Every feature is a 
 
 ---
 
+## Project Purpose and Intent
+
+Read [PROJECT.md](../PROJECT.md) at the start of work and use it as the primary source of project-level purpose and intent for contextual awareness.
+
+This repository is a template, so `PROJECT.md` currently describes template-level intent. For forks, treat fork-specific updates in `PROJECT.md` as authoritative context for understanding prompts and queries.
+
+---
+
+## Rolling Agent Memory
+
+In the project root, [MEMORY.md](../MEMORY.md) is the rolling memory file for agents working on this repository.
+
+`MEMORY.md` starts empty when this template is first used.
+
+When an agent completes a task that changes the project, and the user later indicates the implementation was wrong or needs adjustment, record a concise entry in `MEMORY.md` that can guide similar future actions.
+
+Each memory entry should focus on reusable guidance (what was attempted, what was wrong, and what to do next time).
+
+---
+
 ## Project Layout
 
 ```
@@ -244,11 +264,14 @@ Load the relevant skill before working on these tasks:
 | Task | Skill file |
 |---|---|
 | Initialize project environment | `.github/skills/paf-init/SKILL.md` |
+| Define project intent, scope, and candidate PAF modules at project start | `.github/skills/paf-init-project/SKILL.md` |
 | Create a new module | `.github/skills/paf-new-module/SKILL.md` |
 | Add implementation to a factory module | `.github/skills/paf-new-implementation/SKILL.md` |
 | Remove a module | `.github/skills/paf-remove-module/SKILL.md` |
 | Add a module from git | `.github/skills/paf-pull-module/SKILL.md` |
 | Initialize/convert module as submodule safely | `.github/skills/paf-init-module/SKILL.md` |
+
+Use `paf-init-project` at project kickoff or soon after forking when the project intent needs to be clarified and broken down into candidate PAF modules.
 
 Run `/paf-test` in chat to execute all unit tests and produce a formatted report.
 
